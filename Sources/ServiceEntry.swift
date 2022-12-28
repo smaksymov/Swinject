@@ -8,7 +8,7 @@ import Foundation
 internal protocol ServiceEntryProtocol: AnyObject {
     func describeWithKey(_ serviceKey: ServiceKey) -> String
     var objectScope: ObjectScopeProtocol { get }
-    var storage: InstanceStorage { get }
+    var storage: InstanceStorage? { get }
     var factory: FunctionType { get }
     var initCompleted: (FunctionType)? { get }
     var serviceType: Any.Type { get }
@@ -25,8 +25,8 @@ public final class ServiceEntry<Service>: ServiceEntryProtocol {
     internal weak var container: Container?
 
     internal var objectScope: ObjectScopeProtocol = ObjectScope.graph
-    internal lazy var storage: InstanceStorage = { [unowned self] in
-        self.objectScope.makeStorage()
+    internal lazy var storage: InstanceStorage? = { [weak self] in
+        self?.objectScope.makeStorage()
     }()
 
     internal var initCompleted: FunctionType? {
